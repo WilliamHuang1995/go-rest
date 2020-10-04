@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,38 +8,34 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Article struct {
-	Title   string `json:"Title"`
-	Desc    string `json:"desc"`
-	Content string `json:"content"`
+func allUsers(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "All Users Endpoint Hit")
 }
 
-type Articles []Article
-
-func allArticles(w http.ResponseWriter, r *http.Request) {
-	articles := Articles{
-		Article{Title: "Test Title", Desc: "Test description", Content: "Hello World"},
-	}
-	fmt.Println("Endpoint hit: All articles")
-	json.NewEncoder(w).Encode(articles)
+func newUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "New User Endpoint Hit")
 }
 
-func testPostArticles(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("test post worked")
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Delete User Endpoint Hit")
 }
 
-func homepage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Homepage hit")
+func updateUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Update User Endpoint Hit")
 }
 
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/", homepage)
-	myRouter.HandleFunc("/articles", allArticles).Methods("GET")
-	myRouter.HandleFunc("/articles", testPostArticles).Methods("POST")
+	myRouter.HandleFunc("/users", allUsers).Methods("GET")
+	myRouter.HandleFunc("/user/{name}", deleteUser).Methods("DELETE")
+	myRouter.HandleFunc("/user/{name}/{email}", updateUser).Methods("PUT")
+	myRouter.HandleFunc("/user/{name}/{email}", newUser).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
 func main() {
+	fmt.Println("Go ORM Tutorial")
+
+	// Handle Subsequent requests
 	handleRequests()
 }
